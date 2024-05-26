@@ -60,11 +60,12 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 style = TextStyle(fontSize = 14.sp),
                 modifier = Modifier
                     .align(alignment = Alignment.TopStart)
-                    .offset(x = 10.dp, y = 0.dp)
+                    .offset(x = 10.dp, y = -4.dp)
             )
             TextField(
                 value = email,
                 onValueChange = { newEmail -> email = newEmail },
+                placeholder = { Text1(text = "Enter your email address") },
                 modifier = Modifier
                     .offset(x = 0.dp, y = 21.dp)
                     .requiredWidth(width = 342.dp)
@@ -89,11 +90,12 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 style = TextStyle(fontSize = 14.sp),
                 modifier = Modifier
                     .align(alignment = Alignment.TopStart)
-                    .offset(x = 10.dp, y = 0.dp)
+                    .offset(x = 10.dp, y = -4.dp)
             )
             TextField(
                 value = password,
                 onValueChange = { newPassword -> password = newPassword },
+                placeholder = { Text1(text = "Enter your password") },
                 modifier = Modifier
                     .offset(x = 0.dp, y = 21.dp)
                     .requiredWidth(width = 342.dp)

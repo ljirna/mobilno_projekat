@@ -65,6 +65,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             TextField(
                 value = name,
                 onValueChange = { newName -> name = newName },
+                placeholder = { Text1("Enter your name") },
                 modifier = Modifier
                     .offset(x = 0.dp, y = 20.dp)
                     .requiredWidth(342.dp)
@@ -92,6 +93,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             TextField(
                 value = email,
                 onValueChange = { newEmail -> email = newEmail },
+                placeholder = { Text1("Enter your email address") },
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .offset(x = 0.dp, y = 20.dp)
@@ -120,6 +122,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             TextField(
                 value = phoneNumber,
                 onValueChange = { newPhoneNumber -> phoneNumber = newPhoneNumber },
+                placeholder = { Text1("Enter your phone number") },
                 modifier = Modifier
                     .offset(x = 0.dp, y = 21.dp)
                     .requiredWidth(342.dp)
@@ -147,6 +150,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             TextField(
                 value = password,
                 onValueChange = { newPassword -> password = newPassword },
+                placeholder = { Text1("Enter your password") },
                 modifier = Modifier
                     .offset(x = 0.dp, y = 21.dp)
                     .requiredWidth(342.dp)
@@ -185,7 +189,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .offset(x = 25.dp, y = 710.dp)
+                .offset(x = 25.dp, y = 730.dp)
                 .requiredWidth(342.dp)
         ) {
             Row(
@@ -207,7 +211,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             style = TextStyle(fontSize = 14.sp),
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .offset(x = 110.dp, y = 755.dp)
+                .offset(x = 110.dp, y = 780.dp)
         )
 
         Button(
@@ -224,7 +228,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             style = TextStyle(fontSize = 14.sp),
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .offset(x = 225.dp, y = 755.dp)
+                .offset(x = 225.dp, y = 780.dp)
         )
     }
 }
