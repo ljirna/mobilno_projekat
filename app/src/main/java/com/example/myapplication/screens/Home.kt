@@ -71,7 +71,7 @@ fun Home(modifier: Modifier = Modifier) {
 
         LazyColumn(modifier = Modifier.offset(y =20.dp) ){
             items(SalonObject.salons) {
-                salons->
+                    salons->
                 SalonsCard(salons = salons)
             }
         }
@@ -89,7 +89,7 @@ fun ScrollCtegory(){
 
     ) {
         items(CategoriesObject.categories) {
-            categories->
+                categories->
             CategoryCard(categories = categories)
         }
 
@@ -130,87 +130,87 @@ fun CategoryCard(categories: Categories) {
 fun SalonsCard (salons: Salons){
 
     Column (
-            modifier = Modifier
-                .offset(y = 15.dp)
-                .padding(25.dp)
-                .clip(shape = RoundedCornerShape(15.dp))
-                .shadow(10.dp)
-                .background(Color.White)
-        )
-        {
+        modifier = Modifier
+            .offset(y = 15.dp)
+            .padding(15.dp)
+            .clip(shape = RoundedCornerShape(15.dp))
+            .shadow(10.dp)
+            .background(Color.White)
+    )
+    {
 
         Image(
-                painter = painterResource(id = salons.image),
-                contentDescription = "Rectangle 1",
-                modifier = Modifier
-                    .requiredHeight(height = 126.dp)
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+            painter = painterResource(id = salons.image),
+            contentDescription = "Rectangle 1",
+            modifier = Modifier
+                .requiredHeight(height = 126.dp)
+                .fillMaxWidth()
+                .fillMaxHeight()
 
+        )
+        Row  {
+            Text(
+                text = salons.title,
+                color = Color.Black,
+                style = androidx.compose.ui.text.TextStyle(
+                    fontSize = 20.sp,
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(19.dp)
             )
-            Row  {
+
+            Row(
+                modifier = Modifier.padding(19.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.star),
+                    contentDescription = "outline / star-1",
+                    tint = Color(0xffffb300),
+                    modifier = Modifier.requiredSize(size = 24.dp)
+                )
                 Text(
-                    text = salons.title,
+                    text = salons.grade,
                     color = Color.Black,
                     style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                     ),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(19.dp)
+                    modifier = Modifier.padding(start = 4.dp) // Small padding to the start of the text
                 )
-
-                Row(
-                    modifier = Modifier.padding(19.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.star),
-                        contentDescription = "outline / star-1",
-                        tint = Color(0xffffb300),
-                        modifier = Modifier.requiredSize(size = 24.dp)
-                    )
-                    Text(
-                        text = salons.grade,
-                        color = Color.Black,
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 18.sp,
-                        ),
-                        modifier = Modifier.padding(start = 4.dp) // Small padding to the start of the text
-                    )
-                }
             }
-            Row (modifier = Modifier.padding(start =16.dp) ){
-                Row {
-                    Icon(painter =painterResource(id = R.drawable.location), contentDescription ="Location")
-                    Text (
-                        text = salons.address,
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 15.sp,
-                        ),
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
+        }
+        Row (modifier = Modifier.padding(start =16.dp) ){
+            Row {
+                Icon(painter =painterResource(id = R.drawable.location), contentDescription ="Location")
+                Text (
+                    text = salons.address,
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 15.sp,
+                    ),
+                    modifier = Modifier.padding(start = 4.dp)
+                )
             }
-            Button(
-                onClick = { },
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xffb36370)),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+        }
+        Button(
+            onClick = { },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xffb36370)),
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
+                    .requiredWidth(width = 326.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .requiredWidth(width = 326.dp)
-                ) {
-                    Text(text = "View")
-                }
+                Text(text = "View")
             }
         }
     }
+}
 
 
 @Composable
