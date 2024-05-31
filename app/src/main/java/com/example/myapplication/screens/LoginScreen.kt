@@ -2,6 +2,7 @@
 
 package com.example.myapplication.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,16 +35,25 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
+import com.example.myapplication.viewModel.AppViewModelProvider
+import com.example.myapplication.viewModel.LoginViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.material3.Text as Text1
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+
+    val userUiState = viewModel.userUiState
+    val coroutineScope = rememberCoroutineScope()
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .requiredWidth(width = 390.dp)
             .requiredHeight(height = 844.dp)
             .background(color = Color.White)
@@ -64,7 +75,10 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             )
             TextField(
                 value = email,
-                onValueChange = { newEmail -> email = newEmail },
+                onValueChange = {
+                        newEmail -> email = newEmail
+                    viewModel.updateEmail(newEmail)
+                },
                 placeholder = { Text1(text = "Enter your email address") },
                 modifier = Modifier
                     .offset(x = 0.dp, y = 21.dp)
@@ -94,7 +108,10 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             )
             TextField(
                 value = password,
-                onValueChange = { newPassword -> password = newPassword },
+                onValueChange = {
+                        newPassword -> password = newPassword
+                    viewModel.updatePassword(newPassword)
+                },
                 placeholder = { Text1(text = "Enter your password") },
                 modifier = Modifier
                     .offset(x = 0.dp, y = 21.dp)
@@ -128,7 +145,18 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         )
 
         Button(
-            onClick = { },
+            onClick = {
+                coroutineScope.launch {
+                    Log.d("Pre signup", viewModel.userUiState.toString())
+                    viewModel.signInUser { isLoggedIn, error ->
+                        if (isLoggedIn) {
+                            Log.d("Register", viewModel.userUiState.toString())
+                        } else {
+                            Log.d("Register", "Registration failed: $error")
+                        }
+                    }
+                }
+            },
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xffb36370)),
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
@@ -181,5 +209,5 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(Modifier)
+    LoginScreen()
 }
