@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +48,8 @@ import com.example.myapplication.R
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BeautySalon(modifier: Modifier = Modifier){
+    var isFavorite by remember { mutableStateOf(false) }
+
     Column (
         modifier = Modifier.fillMaxWidth(). background(color = Color(0XF3F3F3F3))
     ) {
@@ -58,10 +65,10 @@ fun BeautySalon(modifier: Modifier = Modifier){
             painter = painterResource(id = R.drawable.salon),
             contentDescription = "Rectangle 1",
             modifier = modifier
-                .requiredHeight(height = 143.dp)
+                .requiredHeight(height = 144.dp)
                 .width(390.dp)
         )
-        Row  {
+        Row (verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = "Desert Spring",
                 color = Color.Black,
@@ -70,11 +77,34 @@ fun BeautySalon(modifier: Modifier = Modifier){
                 ),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(19.dp)
+                    .padding(20.dp)
             )
+            Icon(
+                painter = painterResource(id = if (isFavorite) R.drawable.reacted_favorite_24 else R.drawable.favorite),
+                contentDescription = "outline / favorite",
+                tint = Color(0xffb36370),
+                modifier = Modifier
+                    .padding(24.dp)
+                    .requiredSize(size = 24.dp)
+                    .clickable {
+                        isFavorite = !isFavorite
+                    }
+            )
+        }
+        Column (modifier = Modifier.padding(start =16.dp) ){
+            Row {
+                Icon(painter =painterResource(id = R.drawable.location), contentDescription ="Location")
+                Text (
+                    text = "Rustem-pašina 23, II sprat, 71000 Sarajevo",
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 16.sp,
+                    ),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
 
             Row(
-                modifier = Modifier.padding(19.dp)
+                modifier = Modifier.padding(top = 16.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.star),
@@ -86,30 +116,18 @@ fun BeautySalon(modifier: Modifier = Modifier){
                     text = "4.5",
                     color = Color.Black,
                     style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                     ),
                     modifier = Modifier.padding(start = 4.dp) // Small padding to the start of the text
                 )
             }
         }
-        Row (modifier = Modifier.padding(start =16.dp) ){
-            Row {
-                Icon(painter =painterResource(id = R.drawable.location), contentDescription ="Location")
-                Text (
-                    text = "Rustem-pašina 23, II sprat, 71000 Sarajevo",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 15.sp,
-                    ),
-                    modifier = Modifier.padding(start = 9.dp)
-                )
-            }
-        }
         Box (modifier = Modifier
             .fillMaxWidth()
-            .padding(65.dp),
+            .padding(64.dp),
             contentAlignment = Alignment.Center) {
 
-            Column (modifier = Modifier.offset(y = 3.dp)) {
+            Column (modifier = Modifier.offset(y = 4.dp)) {
                 card(service = "Hair Color", price = 300)
                 card(service = "Perm", price = 500 )
                 card(service = "Styling", price = 100)
@@ -137,14 +155,14 @@ fun Heading(title: String, modifier: Modifier = Modifier) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(19.dp)
+                .padding(20.dp)
         )
     }
 }
 
 @Composable
 fun card (service: String, price: Int, modifier: Modifier = Modifier) {
-    Row (modifier = Modifier.padding(10.dp)){
+    Row (modifier = Modifier.padding(12.dp)){
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -152,13 +170,13 @@ fun card (service: String, price: Int, modifier: Modifier = Modifier) {
                 .requiredWidth(width = 342.dp)
                 .clip(shape = RoundedCornerShape(10.dp))
                 .background(color = Color.White)
-                .padding(all = 1.dp)
+                .padding(all = 4.dp)
 
 
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                modifier = Modifier.padding(15.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                modifier = Modifier.padding(16.dp)
             ) {
                 Text(
                     text = "$service",
@@ -186,13 +204,13 @@ fun card (service: String, price: Int, modifier: Modifier = Modifier) {
                     .height(40.dp)
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
+                    verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
                     modifier = Modifier
                         .padding(horizontal = 8.dp,
                             vertical = 4.dp)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start)
+                        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)
                     ) {
                         Text(
                             text = "$price" + " KM",
@@ -203,11 +221,6 @@ fun card (service: String, price: Int, modifier: Modifier = Modifier) {
                         )
                     }
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.chevronright),
-                    contentDescription = "outline / chevron-right",
-                    modifier = Modifier
-                        .requiredSize(size = 24.dp))
             }
         }
     }
