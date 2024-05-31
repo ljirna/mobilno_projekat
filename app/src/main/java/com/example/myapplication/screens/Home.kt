@@ -1,8 +1,10 @@
 package com.example.myapplication.screens
 
+import android.annotation.SuppressLint
 import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,8 +32,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,9 +58,32 @@ import com.example.myapplication.model.Categories
 import com.example.myapplication.model.CategoriesObject
 import com.example.myapplication.model.SalonObject
 import com.example.myapplication.model.Salons
+//import com.example.myapplication.screens.navigation.UserBottomBar
+
+
 
 @Composable
-fun Home(modifier: Modifier = Modifier) {
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+fun HomeWithBottomBar(
+    navigateToHome: () -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToProfile: () -> Unit,
+) {
+    Scaffold(
+        //bottomBar = { UserBottomBar(onHomeClick = navigateToHome, onSearchClick = navigateToSearch, onProfileClick = navigateToProfile) }
+    ) {
+        Home()
+    }
+}
+
+@Composable
+fun Home(//navigateToSearch: () -> Unit,
+    //navigateToProfile: () -> Unit
+) {
+
+    // State to keep track of the selected category
+    var selectedCategory by remember { mutableStateOf<Categories?>(null) }
+
     Column(modifier = Modifier
         .background(color = Color(0XF3F3F3F3))
         .width(390.dp)
@@ -64,15 +94,28 @@ fun Home(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .height(64.dp) // Adjust height as needed
                 .background(color = Color(0xffb36370))
+                .clickable {
+                    // Clear the selected category when the header is clicked
+                    selectedCategory = null
+                }
         ) {
-            Heading("Home", Modifier);
+            Heading("Home", Modifier)
         }
-        ScrollCtegory();
+        ScrollCategory(onCategoryClick = { category ->
+            selectedCategory = category
+        })
+
+        val filteredSalons = if (selectedCategory == null) {
+            SalonObject.salons
+        } else {
+            SalonObject.salons.filter { it.id == selectedCategory?.id }
+        }
+
 
         LazyColumn(modifier = Modifier.offset(y =20.dp) ){
-            items(SalonObject.salons) {
-                    salons->
-                SalonsCard(salons = salons)
+            items(filteredSalons) {
+                    salon ->
+                SalonsCard(salons = salon)
             }
         }
 
@@ -80,7 +123,7 @@ fun Home(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ScrollCtegory(){
+fun ScrollCategory(onCategoryClick: (Categories) -> Unit){
     LazyRow (modifier = Modifier
         .fillMaxWidth()
         .size(140.dp)
@@ -88,25 +131,28 @@ fun ScrollCtegory(){
         .padding(all = 1.dp)
 
     ) {
-        items(CategoriesObject.categories) {
-                categories->
-            CategoryCard(categories = categories)
+        items(CategoriesObject.categories) { category ->
+            CategoryCard(category = category, onClick = {
+                onCategoryClick(category)
+            })
         }
-
     }
+
+
 }
 
 
 
 
 @Composable
-fun CategoryCard(categories: Categories) {
+fun CategoryCard(category: Categories, onClick: () -> Unit) {
     Column (modifier = Modifier
+        .clickable { onClick() }
         .offset(x = 25.dp, y = 8.dp)
         .padding(end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally){
         Image(
-            painter = painterResource(id = categories.image),
+            painter = painterResource(id = category.image),
             contentDescription = "",
             modifier = Modifier
                 .requiredSize(size = 90.dp)
@@ -114,7 +160,7 @@ fun CategoryCard(categories: Categories) {
         )
         Row (Modifier.offset(y = 13.dp)) {
             Text(
-                text =categories.title,
+                text =category.title,
                 color = Color.Black,
                 style = TextStyle(
                     fontSize = 14.sp
@@ -132,7 +178,7 @@ fun SalonsCard (salons: Salons){
     Column (
         modifier = Modifier
             .offset(y = 15.dp)
-            .padding(15.dp)
+            .padding(25.dp)
             .clip(shape = RoundedCornerShape(15.dp))
             .shadow(10.dp)
             .background(Color.White)
