@@ -2,7 +2,7 @@ package com.example.myapplication.screens
 
 import com.example.myapplication.R
 
-
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,30 +36,56 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.viewModel.AppViewModelProvider
+import com.example.myapplication.viewModel.ProfileVeiewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.LaunchedEffect
 
 import androidx.compose.material3.Text as Text1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(modifier: Modifier = Modifier,
+                  userId: Int,
+                  salonId: Int,
+                  viewModel: ProfileVeiewModel = viewModel(factory = AppViewModelProvider.Factory),
+                  onLogout: () -> Unit) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val usersUiState by viewModel::userUistate
+    val favouritesUiState by viewModel::favouriteUiState
+    val context = LocalContext.current
+    val likes by viewModel::likesUiState
+
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserData(userId)
+        viewModel.fetchLikes(userId, salonId)
+    }
+    
 
     Column (Modifier.fillMaxHeight()) {
         Box(
@@ -166,8 +192,12 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(8.dp)
             )
 
+            val context = LocalContext.current
             Button(
-                onClick = { },
+                onClick = {
+                    viewModel.logout(onLogout)
+                    Toast.makeText(context, "You have logged out", Toast.LENGTH_SHORT).show()
+                },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xffb36370)),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
@@ -201,5 +231,5 @@ fun Title(title: String){
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
 private fun ProfileScreenPreview() {
-    ProfileScreen(Modifier)
+    ProfileScreen(Modifier, userId = 1, salonId = 1, onLogout = {})
 }

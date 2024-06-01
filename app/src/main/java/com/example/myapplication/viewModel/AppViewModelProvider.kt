@@ -19,10 +19,14 @@ object AppViewModelProvider {
             LoginViewModel(
                 appApplication().container.userRepository
             )
-
         }
+        initializer {
+            ProfileVeiewModel(
+                appApplication().container.userRepository,
+                appApplication().container.favouritesRepository
+            )
     }
 }
 
 fun CreationExtras.appApplication(): AppApplication =
-    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as AppApplication)
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as AppApplication)}
