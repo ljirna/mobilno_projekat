@@ -39,7 +39,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.viewModel.AppViewModelProvider
 import com.example.myapplication.viewModel.LoginViewModel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Text as Text1
 
