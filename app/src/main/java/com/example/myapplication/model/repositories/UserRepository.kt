@@ -16,6 +16,8 @@ class UserRepository (private val userDao: UsersDao): BaseRepository<Users> {
 
     fun getAllUsers(): Flow<List<Users>> = userDao.getAllUsers()
 
+    fun login(email: String, password: String): Flow<Users?> = userDao.login(email, password)
+
     suspend fun getEmailUser(email: String) = userDao.getUserByEmail(email)
 
 }

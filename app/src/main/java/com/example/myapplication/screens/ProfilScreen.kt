@@ -39,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,17 +52,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.viewModel.AppViewModelProvider
+import com.example.myapplication.viewModel.ProfileViewModel
+import kotlinx.coroutines.launch
 
 import androidx.compose.material3.Text as Text1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(viewModel: ProfileViewModel= viewModel(factory = AppViewModelProvider.Factory)) {
+    val coroutineScope = rememberCoroutineScope()
+
+
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
 
-    Column (Modifier.fillMaxHeight()) {
+    Column (Modifier.fillMaxHeight().background(Color.White)) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -103,9 +111,10 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 )
                 Spacer(Modifier.size(40.dp))
                 Icon(painter = painterResource(
-                    id = R.drawable.user),
+                    id = R.drawable.reacted_favorite_24),
                     contentDescription = "",
-                    Modifier.size(24.dp)
+                    Modifier.size(24.dp),
+                    Color(color = 0xffb36370)
                 )
             }
 
@@ -201,5 +210,5 @@ fun Title(title: String){
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
 private fun ProfileScreenPreview() {
-    ProfileScreen(Modifier)
+    ProfileScreen()
 }

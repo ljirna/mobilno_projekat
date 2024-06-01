@@ -27,14 +27,14 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     suspend fun signInUser(onResult: (Boolean, String?) -> Unit) {
         if (validateInput()) {
-            val user = userRepository.getAllUsers().first()
+            val user = userRepository.login(userUiState.usersDetails.email, userUiState.usersDetails.password).first()
             if (user != null) {
                 onResult(true, null)
             } else {
-                onResult(false, "Invalid username or password")
+                onResult(false, "Invalid email or password")
             }
         } else {
-            onResult(false, "Please enter both username and password")
+            onResult(false, "Please enter both email and password")
         }
     }
 }

@@ -19,7 +19,11 @@ object AppViewModelProvider {
             LoginViewModel(
                 appApplication().container.userRepository
             )
-
+        }
+        initializer {
+            ProfileViewModel(
+                appApplication().container.userRepository
+            )
         }
     }
 }

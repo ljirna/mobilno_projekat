@@ -3,6 +3,7 @@
 package com.example.myapplication.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -45,13 +47,19 @@ import androidx.compose.material3.Text as Text1
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
-
+    val context = LocalContext.current
     val userUiState = viewModel.userUiState
     val coroutineScope = rememberCoroutineScope()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null)}
+    var showToast by remember { mutableStateOf(false)}
 
+    if(showToast) {
+        Toast.makeText(context, "You have successfully logged in", Toast.LENGTH_SHORT).show()
+            showToast = false
+        }
     Box(
         modifier = Modifier
             .requiredWidth(width = 390.dp)
@@ -150,8 +158,11 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(factory = AppViewModelProv
                     Log.d("Pre signup", viewModel.userUiState.toString())
                     viewModel.signInUser { isLoggedIn, error ->
                         if (isLoggedIn) {
+                            errorMessage = null
+                            showToast = true
                             Log.d("Register", viewModel.userUiState.toString())
                         } else {
+                            errorMessage = error
                             Log.d("Register", "Registration failed: $error")
                         }
                     }
@@ -176,6 +187,17 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(factory = AppViewModelProv
                     style = TextStyle(fontSize = 20.sp)
                 )
             }
+        }
+
+        errorMessage?.let {
+            Text1(
+                text = it,
+                color = Color.Red,
+                style = TextStyle(fontSize = 14.sp),
+                modifier = Modifier
+                    .align(alignment = Alignment.TopStart)
+                    .offset(x = 70.dp, y = 630.dp)
+            )
         }
 
         Text1(
