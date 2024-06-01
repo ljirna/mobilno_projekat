@@ -1,5 +1,6 @@
 package com.example.myapplication.screens
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -17,9 +18,12 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -43,15 +47,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.model.SalonObject
+import com.example.myapplication.model.Salons
+import com.example.myapplication.model.Service
 
+@Composable
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+fun SalonWithBottomBar(
+    navigateToHome: () -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToProfile: () -> Unit,
+) {
+    Scaffold(
+        //bottomBar = { UserBottomBar(onHomeClick = navigateToHome, onSearchClick = navigateToSearch, onProfileClick = navigateToProfile) }
+    ) {
+        Home()
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun BeautySalon(modifier: Modifier = Modifier){
+fun BeautySalon(salon: Salons, modifier: Modifier = Modifier
+    //,navigateToSearch: () -> Unit,
+    //navigateToProfile: () -> Unit
+    ){
     var isFavorite by remember { mutableStateOf(false) }
 
     Column (
-        modifier = Modifier.fillMaxWidth(). background(color = Color(0XF3F3F3F3))
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color(0XF3F3F3F3))
     ) {
         Box(
             modifier = Modifier
@@ -62,7 +87,7 @@ fun BeautySalon(modifier: Modifier = Modifier){
             Heading("Beauty Salon", Modifier);
         }
         Image(
-            painter = painterResource(id = R.drawable.salon),
+            painter = painterResource(id = salon.image),
             contentDescription = "Rectangle 1",
             modifier = modifier
                 .requiredHeight(height = 144.dp)
@@ -70,7 +95,7 @@ fun BeautySalon(modifier: Modifier = Modifier){
         )
         Row (verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "Desert Spring",
+                text = salon.title,
                 color = Color.Black,
                 style = androidx.compose.ui.text.TextStyle(
                     fontSize = 20.sp,
@@ -95,7 +120,7 @@ fun BeautySalon(modifier: Modifier = Modifier){
             Row {
                 Icon(painter =painterResource(id = R.drawable.location), contentDescription ="Location")
                 Text (
-                    text = "Rustem-pašina 23, II sprat, 71000 Sarajevo",
+                    text = salon.address,
                     style = androidx.compose.ui.text.TextStyle(
                         fontSize = 16.sp,
                     ),
@@ -113,7 +138,7 @@ fun BeautySalon(modifier: Modifier = Modifier){
                     modifier = Modifier.requiredSize(size = 24.dp)
                 )
                 Text(
-                    text = "4.5",
+                    text = salon.grade,
                     color = Color.Black,
                     style = androidx.compose.ui.text.TextStyle(
                         fontSize = 16.sp,
@@ -127,10 +152,11 @@ fun BeautySalon(modifier: Modifier = Modifier){
             .padding(64.dp),
             contentAlignment = Alignment.Center) {
 
-            Column (modifier = Modifier.offset(y = 4.dp)) {
-                card(service = "Hair Color", price = 300)
-                card(service = "Perm", price = 500 )
-                card(service = "Styling", price = 100)
+            LazyColumn(modifier = Modifier.offset(y =20.dp) ){
+                items(salon.listOfServices) {
+                        service ->
+                    ServiceCard(service = service)
+                }
             }
         }
 
@@ -147,7 +173,7 @@ fun Heading(title: String, modifier: Modifier = Modifier) {
             .height(64.dp)
     ) {
         Text(
-            text = "$title",
+            text = title,
             color = Color.White,
             style = androidx.compose.ui.text.TextStyle(
                 fontSize = 20.sp,
@@ -161,17 +187,18 @@ fun Heading(title: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun card (service: String, price: Int, modifier: Modifier = Modifier) {
-    Row (modifier = Modifier.padding(12.dp)){
+fun ServiceCard (service: Service, modifier: Modifier = Modifier) {
+    Row (
+        modifier = Modifier.padding(8.dp)
+    ){
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
+                .padding(all = 8.dp)
                 .requiredWidth(width = 342.dp)
                 .clip(shape = RoundedCornerShape(10.dp))
                 .background(color = Color.White)
-                .padding(all = 4.dp)
-
 
         ) {
             Row(
@@ -179,7 +206,7 @@ fun card (service: String, price: Int, modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "$service",
+                    text = service.title,
                     color = Color.Black,
                     style = androidx.compose.ui.text.TextStyle(
                         fontSize = 20.sp
@@ -210,10 +237,18 @@ fun card (service: String, price: Int, modifier: Modifier = Modifier) {
                             vertical = 4.dp)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)
+                        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "$price" + " KM",
+                            text = service.price,
+                            color = Color.Black,
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontSize = 14.sp
+                            )
+                        )
+                        Text(
+                            text = " KM",
                             color = Color.Black,
                             style = androidx.compose.ui.text.TextStyle(
                                 fontSize = 14.sp
@@ -231,5 +266,6 @@ fun card (service: String, price: Int, modifier: Modifier = Modifier) {
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
 private fun BeautySalonPreview() {
-    BeautySalon(Modifier);
+    val salon = SalonObject.salons.find { it.id == 1 } ?: return
+    BeautySalon(salon)
 }

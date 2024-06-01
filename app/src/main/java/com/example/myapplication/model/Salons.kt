@@ -9,7 +9,7 @@ data class Salons(
     val title: String,
     val grade: String,
     val address: String,
-
+    val listOfServices: List<Service>
 )
 
 

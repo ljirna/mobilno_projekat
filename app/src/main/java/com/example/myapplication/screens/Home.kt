@@ -173,7 +173,7 @@ fun CategoryCard(category: Categories, onClick: () -> Unit) {
 }
 
 @Composable
-fun SalonsCard (salons: Salons){
+fun SalonsCard (salons: Salons){ //, navController: NavController
 
     Column (
         modifier = Modifier
@@ -238,7 +238,7 @@ fun SalonsCard (salons: Salons){
             }
         }
         Button(
-            onClick = { },
+            onClick = { }, //navController.navigate("beautySalon/${salon.id}")
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xffb36370)),
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
