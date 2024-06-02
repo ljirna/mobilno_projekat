@@ -318,13 +318,16 @@ fun favorites(salons: Salons){
             Row(
                 modifier = Modifier.padding(19.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.reacted_favorite_24),
-                    contentDescription = "outline / star-1",
-                    tint = Color(0xffb36370),
-                    modifier = Modifier.requiredSize(size = 24.dp)
-                )
+                IconButton(onClick = { /*TODO*/ },
+                    modifier = Modifier.size(24.dp)) {
 
+                    Icon(
+                        painter = painterResource(id = R.drawable.reacted_favorite_24),
+                        contentDescription = "",
+                        tint = Color(0xffb36370),
+                        modifier = Modifier.requiredSize(size = 24.dp)
+                    )
+                }
             }
         }
         Row (modifier = Modifier.padding(start =16.dp) ) {
