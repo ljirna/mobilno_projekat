@@ -77,6 +77,8 @@ import com.example.myapplication.viewModel.toFavourites
 import kotlinx.coroutines.async
 
 import androidx.compose.material3.Text as Text1
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 
 object ProfileDestination : NavigationDestination {
     override val route = "profile"
@@ -345,7 +347,7 @@ fun display(
         for (favourite in favouriteList) {
             for (salon in SalonObject.salons) {
                 if (favourite.salonId == salon.id) {
-                    favorites(salons = salon, favourites = favourite)
+                    favorites(salons = salon)
                 }
             }
         }
@@ -354,8 +356,10 @@ fun display(
 
 @Composable
 fun favorites(  salons: Salons,
-                favourites: Favourites
+                viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
              ){
+    var showDialog by remember { mutableStateOf(false) }
+
     Column (
         modifier = Modifier
             .offset(y = 15.dp)
@@ -395,7 +399,9 @@ fun favorites(  salons: Salons,
             Row(
                 modifier = Modifier.padding(19.dp)
             ) {
-                IconButton(onClick = { /*TODO*/ },
+                IconButton(onClick = {
+                    showDialog = true
+                },
                     modifier = Modifier.size(24.dp)) {
 
                     Icon(
@@ -425,6 +431,27 @@ fun favorites(  salons: Salons,
         }
         Spacer(modifier = Modifier.size(10.dp))
     }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "Confirm Cancellation") },
+            text = { Text(text = "Do you really want to delete the booked trip?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteFavoriteBySalonId(salons.id)
+                    showDialog = false
+                }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("No")
+                }
+            }
+        )
+    }
 }
 
 
@@ -440,12 +467,12 @@ fun favoritesPreview(){
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
 fun ProfileScreenPreview() {
-    val user = Users(
+    /*val user = Users(
         id = 1,
         name = "Emina Peljto",
         email = "emina.peljto@gmail.com",
         phone = "061 123 456",
         password = "123456"
-    )
+    )*/
     ProfileScreen(userId = 1)
 }

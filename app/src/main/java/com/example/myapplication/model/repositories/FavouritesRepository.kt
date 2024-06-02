@@ -20,4 +20,8 @@ class FavouritesRepository (private val favouritesDao: FavouritesDao) : BaseRepo
     fun deleteFavouriteBySalonId(salonId: Int, userId: Int) {
         favouritesDao.deleteFavouritesBySalonId(salonId, userId)
     }
+
+    fun deleteFavourite(salonId: Int){
+        favouritesDao.deleteFavourite(salonId)
+    }
 }

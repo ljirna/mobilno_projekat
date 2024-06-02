@@ -36,4 +36,7 @@ interface FavouritesDao {
     @Query("DELETE FROM Favourites WHERE salonId = :salonId AND userId = :userId")
     fun deleteFavouritesBySalonId(salonId: Int, userId: Int): Int
 
+    @Query ("DELETE FROM Favourites WHERE salonId = :salonId")
+    fun deleteFavourite(salonId: Int): Int
+
 }

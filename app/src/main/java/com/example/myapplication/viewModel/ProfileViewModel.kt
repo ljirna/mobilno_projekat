@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel (
     private val userRepository: UserRepository,
-    private val fovouriteRepository: FavouritesRepository
+    private val favouriteRepository: FavouritesRepository
 ) : ViewModel(){
     var userUistate by mutableStateOf(UsersUiState())
         private set
@@ -42,7 +42,7 @@ class ProfileViewModel (
     }
 
     fun getFavouriteList(userId: Int) : Flow<List<Favourites?>>{
-        return fovouriteRepository.getFavouriteByUserId(userId)
+        return favouriteRepository.getFavouriteByUserId(userId)
     }
 
 
@@ -71,4 +71,11 @@ class ProfileViewModel (
             }
         }
     }
+
+    fun deleteFavoriteBySalonId(salonId: Int) {
+        viewModelScope.launch {
+            favouriteRepository.deleteFavourite(salonId)
+        }
+    }
+
 }
