@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.myapplication.model.daos.FavouritesDao
 import com.example.myapplication.model.daos.UsersDao
+import com.example.myapplication.model.models.Favourites
 import com.example.myapplication.model.models.Users
 import perfetto.protos.ProfilerSmaps
 
-@Database(entities = [Users::class], version = 1, exportSchema = false)
+@Database(entities = [Users::class, Favourites::class], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase(){
     abstract fun usersDao(): UsersDao
+    abstract fun favouritesDao(): FavouritesDao
 
     companion object{
         @Volatile
