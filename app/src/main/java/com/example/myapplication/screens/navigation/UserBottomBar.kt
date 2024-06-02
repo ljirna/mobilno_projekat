@@ -3,6 +3,7 @@ package com.example.myapplication.screens.navigation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,31 +27,44 @@ fun UserBottomBar (
     onSearchClick: () -> Unit = {},
     onProfileClick: () -> Unit = {}
 ) {
-    BottomAppBar(
-        containerColor = Color(0xffb36370),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+
+        BottomAppBar(
+            containerColor = Color(0xffb36370),
         ) {
-            IconButton(onClick = onHomeClick) {
-                Icon(painterResource(id = R.drawable.home), contentDescription = "", tint= Color.White)
-            }
-            IconButton(onClick = onSearchClick) {
-                Icon(painterResource(id = R.drawable.search), contentDescription = "", tint = Color.White)
-            }
-            IconButton(onClick = onProfileClick) {
-                Icon(painterResource(id = R.drawable.user1), contentDescription = "", tint =Color.White)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                IconButton(onClick = onHomeClick) {
+                    Icon(
+                        painterResource(id = R.drawable.home),
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
+                IconButton(onClick = onSearchClick) {
+                    Icon(
+                        painterResource(id = R.drawable.search),
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
+                IconButton(onClick = onProfileClick) {
+                    Icon(
+                        painterResource(id = R.drawable.user1),
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
 
-}
 
 
-@Preview(showBackground = true)
+@Preview()
 @Composable
 fun StudentBottomBarPreview() {
     UserBottomBar(

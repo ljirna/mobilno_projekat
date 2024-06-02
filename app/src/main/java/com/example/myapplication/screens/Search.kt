@@ -24,6 +24,7 @@ object SearchDestination : NavigationDestination {
     override val route = "search"
     override val title = "Search"
 }
+/*
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun SearchWithBottomBar(
@@ -36,11 +37,12 @@ fun SearchWithBottomBar(
     ) {
         Home()
     }
-}
+}*/
 @Composable
-fun Search(/*navController: NavController*/
-//navigateToSearch: () -> Unit,
-    //navigateToProfile: () -> Unit
+fun Search(modifier: Modifier = Modifier,
+          navigateToHomePage: () -> Unit = {},
+          navigateToBeautySalon: () -> Unit = {},
+          navigateToProfile: () -> Unit = {}
 ) {
     Column(modifier = Modifier
         .background(color = Color(0XF3F3F3F3))
@@ -59,7 +61,7 @@ fun Search(/*navController: NavController*/
         LazyColumn(modifier = Modifier.offset(y =10.dp) ){
             items(SalonObject.salons) {
                     salons->
-                SalonsCard(salons = salons)//, navController = navController
+                SalonsCard(salons = salons)
             }
         }
     }

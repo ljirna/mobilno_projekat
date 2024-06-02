@@ -4,12 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myapplication.screens.BeautySalonDestination
+//import com.example.myapplication.screens.BeautySalon
+//import com.example.myapplication.screens.BeautySalonDestination
 import com.example.myapplication.screens.Home
 import com.example.myapplication.screens.HomeDestination
 import com.example.myapplication.screens.LoginDestination
 import com.example.myapplication.screens.LoginScreen
 import com.example.myapplication.screens.ProfileDestination
+import com.example.myapplication.screens.ProfileScreen
+import com.example.myapplication.screens.Search
 import com.example.myapplication.screens.SearchDestination
 import com.example.myapplication.screens.SignupDestination
 import com.example.myapplication.screens.SignupScreen
@@ -27,6 +30,7 @@ fun UserNavHost(
                 navigateToHomePage = { navController.navigate("${HomeDestination.route}") }
             )
         }
+
         composable(route = SignupDestination.route) {
             SignupScreen(
                 navigateToLogin = {navController.navigate("${LoginDestination.route}")}
@@ -41,7 +45,21 @@ fun UserNavHost(
             Home(
                 navigateToSearch = { navController.navigate("${SearchDestination.route}") },
                 navigateToProfile = { navController.navigate("${ProfileDestination.route}") },
-                navigateToBeautySalon = { navController.navigate("${BeautySalonDestination.route}") }
+                //navigateToBeautySalon = { navController.navigate("${BeautySalonDestination.route}") }
+            )
+        }
+        composable(route = SearchDestination.route) {
+            Search(
+                navigateToHomePage = { navController.navigate("${HomeDestination.route}") },
+               // navigateToBeautySalon = { navController.navigate("${BeautySalonDestination.route}") },
+                navigateToProfile = { navController.navigate("${ProfileDestination.route}") }
+            )
+        }
+        composable(route = ProfileDestination.route) {
+            ProfileScreen(
+                navigateToHomePage = { navController.navigate("${HomeDestination.route}") },
+                navigateToSearch = { navController.navigate("${SearchDestination.route}") },
+                userId = 1
             )
         }
     }

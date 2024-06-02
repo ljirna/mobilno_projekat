@@ -256,7 +256,7 @@ fun SignupScreen(
         )
 
         Button(
-            onClick = { },
+            onClick = { navigateToLogin()},
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             modifier = Modifier
                 .align(Alignment.TopStart)

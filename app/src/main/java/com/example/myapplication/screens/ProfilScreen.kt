@@ -3,6 +3,7 @@ package com.example.myapplication.screens
 
 
 
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -85,6 +86,8 @@ object ProfileDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier,
+                  navigateToHomePage: () -> Unit = {},
+                  navigateToSearch: () -> Unit = {},
                   userId: Int
                   ) {
 

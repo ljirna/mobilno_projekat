@@ -87,7 +87,7 @@ fun BeautySalon(
     viewModel: SalonFavoritesViewModel = viewModel(factory = AppViewModelProvider.Factory)
     //,navigateToSearch: () -> Unit,
     //navigateToProfile: () -> Unit
-    ){
+){
     var isFavorite by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
