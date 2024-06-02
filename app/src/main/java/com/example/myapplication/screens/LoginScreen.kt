@@ -39,13 +39,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
+import com.example.myapplication.screens.navigation.NavigationDestination
 import com.example.myapplication.viewModel.AppViewModelProvider
 import com.example.myapplication.viewModel.LoginViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Text as Text1
 
+object LoginDestination : NavigationDestination {
+    override val route: String = "login"
+    override val title: String = "Login"
+}
+
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    navigateToSignup: () -> Unit = {},
+    navigateToHomePage: () -> Unit = {},
+    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val context = LocalContext.current
     val userUiState = viewModel.userUiState
     val coroutineScope = rememberCoroutineScope()
@@ -159,7 +169,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(factory = AppViewModelProv
                         if (isLoggedIn) {
                             errorMessage = null
                             showToast = true
-                            Log.d("Register", viewModel.userUiState.toString())
+                            navigateToHomePage()
                         } else {
                             errorMessage = error
                             Log.d("Register", "Registration failed: $error")
@@ -209,7 +219,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel(factory = AppViewModelProv
         )
 
         Button(
-            onClick = { },
+            onClick = {navigateToSignup() },
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             modifier = Modifier
                 .align(alignment = Alignment.TopStart)

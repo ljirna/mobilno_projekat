@@ -18,6 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.model.SalonObject
+import com.example.myapplication.screens.navigation.NavigationDestination
+
+object SearchDestination : NavigationDestination {
+    override val route = "search"
+    override val title = "Search"
+}
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun SearchWithBottomBar(

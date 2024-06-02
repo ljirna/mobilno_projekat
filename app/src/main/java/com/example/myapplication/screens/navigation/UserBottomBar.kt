@@ -11,10 +11,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,7 +27,7 @@ fun UserBottomBar (
     onProfileClick: () -> Unit = {}
 ) {
     BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        containerColor = Color(0xffb36370),
     ) {
         Row(
             modifier = Modifier
@@ -34,13 +36,13 @@ fun UserBottomBar (
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconButton(onClick = onHomeClick) {
-                Icon(painterResource(id = R.drawable.star), contentDescription = "")
+                Icon(painterResource(id = R.drawable.home), contentDescription = "", tint= Color.White)
             }
             IconButton(onClick = onSearchClick) {
-                Icon(painterResource(id = R.drawable.star), contentDescription = "")
+                Icon(painterResource(id = R.drawable.search), contentDescription = "", tint = Color.White)
             }
             IconButton(onClick = onProfileClick) {
-                Icon(painterResource(id = R.drawable.star), contentDescription = "")
+                Icon(painterResource(id = R.drawable.user1), contentDescription = "", tint =Color.White)
             }
         }
     }

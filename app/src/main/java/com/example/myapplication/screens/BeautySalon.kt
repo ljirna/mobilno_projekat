@@ -54,9 +54,15 @@ import com.example.myapplication.model.SalonObject
 import com.example.myapplication.model.Salons
 import com.example.myapplication.model.Service
 import com.example.myapplication.model.models.Users
+import com.example.myapplication.screens.navigation.NavigationDestination
 import com.example.myapplication.viewModel.AppViewModelProvider
 import com.example.myapplication.viewModel.SalonFavoritesViewModel
 import kotlinx.coroutines.launch
+
+object BeautySalonDestination : NavigationDestination{
+    override val route = "beautySalon"
+    override val title = "Beauty Salon"
+}
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

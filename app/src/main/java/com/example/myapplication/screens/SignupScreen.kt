@@ -37,13 +37,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
+import com.example.myapplication.screens.navigation.NavigationDestination
 import com.example.myapplication.viewModel.AppViewModelProvider
 import com.example.myapplication.viewModel.SignupViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Text as Text1
 
+object SignupDestination : NavigationDestination {
+    override val route: String = "signup"
+    override val title: String = "Signup"
+}
+
 @Composable
-fun SignupScreen(viewModel: SignupViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun SignupScreen(
+    modifier: Modifier = Modifier,
+    navigateToLogin: () -> Unit = {},
+    viewModel: SignupViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
 
 
     var name by remember { mutableStateOf("") }
@@ -209,7 +218,7 @@ fun SignupScreen(viewModel: SignupViewModel = viewModel(factory = AppViewModelPr
                     Log.d("Pre signup", viewModel.userUiState.toString())
                     viewModel.registerUser { isRegistered, error ->
                         if (isRegistered) {
-                            Log.d("Register", viewModel.userUiState.toString())
+                            navigateToLogin()
                         } else {
                             Log.d("Register", "Registration failed: $error")
                         }

@@ -20,9 +20,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.screens.navigation.NavigationDestination
+
+object SplashDestination : NavigationDestination {
+    override val route: String = "splash"
+    override val title: String = "Splash"
+}
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(modifier: Modifier = Modifier, navigateToLogin: () -> Unit  = {}) {
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -33,8 +39,8 @@ fun SplashScreen() {
         Text(text ="Welcome to GlamifyMe", modifier = Modifier.offset(y = 20.dp), fontSize = 20.sp)
         Text(text = "Unlock Your True Glow", modifier = Modifier.offset(y = 30.dp), fontSize = 16.sp, color = Color.Gray)
     }
-    Row(modifier = Modifier.offset(x = 300.dp,y = 760.dp).padding(16.dp), horizontalArrangement = Arrangement.End) {
-        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.size(70.dp)) {
+    Row(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Bottom){
+        IconButton(onClick = { navigateToLogin()}, modifier = Modifier.size(70.dp)) {
             Icon(painter = painterResource(id = R.drawable.next), contentDescription = "", modifier = Modifier.size(50.dp), tint = Color(0xffb36370))
         }
     }
@@ -43,5 +49,5 @@ fun SplashScreen() {
 @Preview
 @Composable
 public fun SplashScreenPreview() {
-    SplashScreen()
+    SplashScreen(Modifier)
 }

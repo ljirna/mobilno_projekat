@@ -58,10 +58,15 @@ import com.example.myapplication.model.Categories
 import com.example.myapplication.model.CategoriesObject
 import com.example.myapplication.model.SalonObject
 import com.example.myapplication.model.Salons
+import com.example.myapplication.screens.navigation.NavigationDestination
+
 //import com.example.myapplication.screens.navigation.UserBottomBar
 
-
-
+object HomeDestination : NavigationDestination {
+    override val route = "home"
+    override val title = "Home"
+}
+/*
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun HomeWithBottomBar(
@@ -75,10 +80,12 @@ fun HomeWithBottomBar(
         Home()
     }
 }
-
+*/
 @Composable
-fun Home(//navigateToSearch: () -> Unit,
-    //navigateToProfile: () -> Unit
+fun Home(modifier: Modifier =Modifier,
+         navigateToSearch: () -> Unit = {},
+         navigateToProfile: () -> Unit = {},
+         navigateToBeautySalon: () -> Unit = {}
 ) {
 
     // State to keep track of the selected category

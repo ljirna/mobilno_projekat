@@ -69,12 +69,18 @@ import com.example.myapplication.model.Salons
 import com.example.myapplication.model.models.Favourites
 import com.example.myapplication.model.models.Salon
 import com.example.myapplication.model.models.Users
+import com.example.myapplication.screens.navigation.NavigationDestination
 import com.example.myapplication.viewModel.AppViewModelProvider
 import com.example.myapplication.viewModel.ProfileViewModel
 import com.example.myapplication.viewModel.toFavourites
 import kotlinx.coroutines.async
 
 import androidx.compose.material3.Text as Text1
+
+object ProfileDestination : NavigationDestination {
+    override val route = "profile"
+    override val title = "Profile"
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
