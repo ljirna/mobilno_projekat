@@ -3,6 +3,7 @@ package com.example.myapplication.screens
 
 
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,9 +42,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,22 +54,29 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+//import androidx.compose.ui.tooling.data.EmptyGroup.name
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.model.SalonObject
 import com.example.myapplication.model.Salons
 import com.example.myapplication.model.models.Salon
+import com.example.myapplication.model.models.Users
+import com.example.myapplication.viewModel.AppViewModelProvider
+import com.example.myapplication.viewModel.ProfileViewModel
 
 import androidx.compose.material3.Text as Text1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(modifier: Modifier = Modifier, user: Users) {
+
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
@@ -147,12 +157,15 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 
             } else {
                 UserInfo(
-                    name = "Emina Peljto",
-                    email = "emina@gmail.com",
-                    phone = "061 123 456",
+                    name = user.name,
+                    email = user.email,
+                    phone = user.phone,
+                    userId = 1,
+                    salonId = 1,
                     onNameChange = { name = it },
                     onEmailChange = { email = it },
-                    onPhoneChange = { phone = it }
+                    onPhoneChange = { phone = it },
+                    onLogout = { }
                 )
             }
         }
@@ -166,7 +179,31 @@ fun Title(title: String){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserInfo (name: String, email: String, phone: String, onNameChange: (String) -> Unit, onEmailChange: (String) -> Unit, onPhoneChange: (String) -> Unit){
+fun UserInfo (
+    name: String,
+    email: String,
+    phone: String,
+    userId: Int,
+    salonId: Int,
+    viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPhoneChange: (String) -> Unit,
+    onLogout: () -> Unit){
+
+    val coroutineScope = rememberCoroutineScope()
+    val usersUiState by viewModel::userUistate
+    val favouritesUiState by viewModel::favouriteUiState
+    val context = LocalContext.current
+    val likes by viewModel::likesUiState
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserData(userId)
+        viewModel.fetchLikes(userId, salonId)
+    }
+
+
+
     Column(
         Modifier.padding(16.dp)
     ) {
@@ -246,7 +283,11 @@ fun UserInfo (name: String, email: String, phone: String, onNameChange: (String)
                 }
             }
             Button(
-                onClick = { },
+                onClick = {
+                    viewModel.logout(onLogout)
+                    Toast.makeText(context,  "You have logged out", Toast.LENGTH_SHORT).show()
+
+                },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xffb36370)),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
@@ -361,5 +402,12 @@ fun favoritesPreview(){
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreen()
+    val user = Users(
+        id = 1,
+        name = "Emina Peljto",
+        email = "emina.peljto@gmail.com",
+        phone = "061 123 456",
+        password = "123456"
+    )
+    ProfileScreen(user=user)
 }
