@@ -30,9 +30,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +48,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.model.SalonObject
 import com.example.myapplication.model.Salons
 import com.example.myapplication.model.Service
+import com.example.myapplication.model.models.Users
+import com.example.myapplication.viewModel.AppViewModelProvider
+import com.example.myapplication.viewModel.SalonFavoritesViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -67,11 +74,23 @@ fun SalonWithBottomBar(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun BeautySalon(salon: Salons, modifier: Modifier = Modifier
+fun BeautySalon(
+    salon: Salons,
+    userId:Int,
+    modifier: Modifier = Modifier,
+    viewModel: SalonFavoritesViewModel = viewModel(factory = AppViewModelProvider.Factory)
     //,navigateToSearch: () -> Unit,
     //navigateToProfile: () -> Unit
     ){
     var isFavorite by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(salon.id, userId) {
+        viewModel.isFavourite(salon.id, userId) { result ->
+            isFavorite = result
+        }
+    }
+
 
     Column (
         modifier = Modifier
@@ -104,17 +123,26 @@ fun BeautySalon(salon: Salons, modifier: Modifier = Modifier
                     .weight(1f)
                     .padding(20.dp)
             )
-            Icon(
-                painter = painterResource(id = if (isFavorite) R.drawable.reacted_favorite_24 else R.drawable.favorite),
-                contentDescription = "outline / favorite",
-                tint = Color(0xffb36370),
-                modifier = Modifier
-                    .padding(24.dp)
-                    .requiredSize(size = 24.dp)
-                    .clickable {
-                        isFavorite = !isFavorite
+            IconButton(onClick = {
+                isFavorite = !isFavorite
+                coroutineScope.launch {
+                    if (isFavorite) {
+                        viewModel.insertFavorite(salon.id, userId)
+                    } else {
+                        viewModel.deleteFavorite(salon.id, userId)
                     }
-            )
+                }
+            }) {
+                Icon(
+                    painter = painterResource(id = if (isFavorite) R.drawable.favorite else R.drawable.reacted_favorite_24),
+                    contentDescription = "outline / favorite",
+                    tint = Color(0xffb36370),
+                    modifier = Modifier
+                        .padding(24.dp)
+                        .requiredSize(size = 24.dp)
+                )
+            }
+
         }
         Column (modifier = Modifier.padding(start =16.dp) ){
             Row {
@@ -267,5 +295,5 @@ fun ServiceCard (service: Service, modifier: Modifier = Modifier) {
 @Composable
 private fun BeautySalonPreview() {
     val salon = SalonObject.salons.find { it.id == 1 } ?: return
-    BeautySalon(salon)
+    BeautySalon(salon = salon, userId = 1)
 }

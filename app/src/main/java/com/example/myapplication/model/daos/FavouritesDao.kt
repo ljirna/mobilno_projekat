@@ -30,4 +30,7 @@ interface FavouritesDao {
     @Query("SELECT * FROM Favourites WHERE salonId = :salonId AND userId = :userId")
     fun getFavouritesBySalonId(salonId: Int, userId: Int): Flow<Favourites?>
 
+    @Query("DELETE FROM Favourites WHERE salonId = :salonId AND userId = :userId")
+    fun deleteFavouritesBySalonId(salonId: Int, userId: Int): Int
+
 }

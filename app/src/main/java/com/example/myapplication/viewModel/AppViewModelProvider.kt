@@ -26,7 +26,12 @@ object AppViewModelProvider {
                 appApplication().container.userRepository,
                 appApplication().container.favouritesRepository
             )
-    }
+        }
+        initializer {
+            SalonFavoritesViewModel(
+                appApplication().container.favouritesRepository
+            )
+        }
 }
 
 fun CreationExtras.appApplication(): AppApplication =
