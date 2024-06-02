@@ -14,8 +14,9 @@ class FavouritesRepository (private val favouritesDao: FavouritesDao) : BaseRepo
 
     fun getFavourites(): Flow<List<Favourites>> = favouritesDao.getFavourites()
 
-    fun getFavouriteBySalonId(salonId: Int, userId: Int) = favouritesDao.getFavouritesBySalonId(salonId, userId)
+    fun getFavouriteByUserId(userId: Int) = favouritesDao.getFavouritesByUserId(userId)
 
+    fun getFavouriteBySalonId(salonId: Int, userId: Int) = favouritesDao.getFavouritesByUserId(salonId, userId)
     fun deleteFavouriteBySalonId(salonId: Int, userId: Int) {
         favouritesDao.deleteFavouritesBySalonId(salonId, userId)
     }

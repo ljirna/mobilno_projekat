@@ -66,16 +66,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.model.SalonObject
 import com.example.myapplication.model.Salons
+import com.example.myapplication.model.models.Favourites
 import com.example.myapplication.model.models.Salon
 import com.example.myapplication.model.models.Users
 import com.example.myapplication.viewModel.AppViewModelProvider
 import com.example.myapplication.viewModel.ProfileViewModel
+import com.example.myapplication.viewModel.toFavourites
+import kotlinx.coroutines.async
 
 import androidx.compose.material3.Text as Text1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, user: Users) {
+fun ProfileScreen(modifier: Modifier = Modifier,
+                  userId: Int
+                  ) {
 
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -155,13 +160,13 @@ fun ProfileScreen(modifier: Modifier = Modifier, user: Users) {
             Spacer(Modifier.size(30.dp))
 
             if (showFavorites) {
-                display()
+                display(
+                    userId = userId
+                    )
 
             } else {
                 UserInfo(
-                    user = user,
-                    salonId = 1,
-                    onPhoneChange = { phone = it },
+                    userId = userId,
                     onLogout = { }
                 )
             }
@@ -177,10 +182,8 @@ fun Title(title: String){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserInfo (
-    user: Users,
-    salonId: Int,
+    userId: Int,
     viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    onPhoneChange: (String) -> Unit,
     onLogout: () -> Unit){
 
     val coroutineScope = rememberCoroutineScope()
@@ -190,8 +193,7 @@ fun UserInfo (
     val likes by viewModel::likesUiState
 
     LaunchedEffect(Unit) {
-        viewModel.getUserData(user.id)
-        viewModel.fetchLikes(user.id, salonId)
+        viewModel.getUserData(userId)
     }
 
 
@@ -201,7 +203,7 @@ fun UserInfo (
     ) {
         TextField(
             // poslije navigacije promijeniti na -> usersUiState.usersDetails.name
-            value = user.name,
+            value = usersUiState.usersDetails.name,
             onValueChange = { viewModel.editName(it) },
             label = { Text("Full Name")},
             modifier = Modifier
@@ -220,7 +222,7 @@ fun UserInfo (
         )
         TextField(
             // poslije navigacije promijeniti na -> usersUiState.usersDetails.email
-            value = user.email,
+            value = usersUiState.usersDetails.email,
             onValueChange = { viewModel.editEmail(it)},
             label = { Text(text = "Email")},
             modifier = Modifier
@@ -239,7 +241,7 @@ fun UserInfo (
         )
         TextField(
             // poslije navigacije promijeniti na -> usersUiState.usersDetails.phone
-            value = user.phone,
+            value = usersUiState.usersDetails.phone,
             onValueChange = { viewModel.editPhone(it) },
             label = { Text(text = "Phone")},
             modifier = Modifier
@@ -313,16 +315,38 @@ fun UserInfo (
 }
 
 @Composable
-fun display(){
+fun display(
+    userId: Int,
+    viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
+){
+    val usersUiState by viewModel::userUistate
+    val favouritesUiState by viewModel::favouriteUiState
+    val context = LocalContext.current
+    val likes by viewModel::likesUiState
+
+    var favouriteList by remember { mutableStateOf(listOf<Favourites>()) }
+
+    LaunchedEffect(userId) {
+        viewModel.getFavouriteList(userId).collect { favourites ->
+            favouriteList = favourites.filterNotNull()
+        }
+    }
+
     Column (modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SalonObject.salons.forEach { salon ->
-            favorites(salon)
+        for (favourite in favouriteList) {
+            for (salon in SalonObject.salons) {
+                if (favourite.salonId == salon.id) {
+                    favorites(salons = salon, favourites = favourite)
+                }
+            }
         }
     }
 }
 
 @Composable
-fun favorites(salons: Salons){
+fun favorites(  salons: Salons,
+                favourites: Favourites
+             ){
     Column (
         modifier = Modifier
             .offset(y = 15.dp)
@@ -399,7 +423,9 @@ fun favorites(salons: Salons){
 @Preview
 @Composable
 fun favoritesPreview(){
-    display();
+    val salon = SalonObject.salons.find { it.id == 1 } ?: return
+    val favourite = Favourites(1, 1, 1)
+    display(userId = 1);
 }
 
 @Preview(widthDp = 390, heightDp = 844)
@@ -412,5 +438,5 @@ fun ProfileScreenPreview() {
         phone = "061 123 456",
         password = "123456"
     )
-    ProfileScreen(user=user)
+    ProfileScreen(userId = 1)
 }

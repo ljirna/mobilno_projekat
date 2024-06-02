@@ -5,8 +5,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.model.models.Favourites
 import com.example.myapplication.model.repositories.FavouritesRepository
 import com.example.myapplication.model.repositories.UserRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel (
@@ -39,17 +41,11 @@ class ProfileViewModel (
         onLogout()
     }
 
-    fun fetchLikes(userId: Int, salonId: Int) {
-        viewModelScope.launch {
-            fovouriteRepository.getFavouriteBySalonId(salonId, userId).collect()
-            {
-                    favourite ->
-                favourite?.let {
-                    favouriteUiState = it.toFavouritesUiState()
-                }
-            }
-        }
+    fun getFavouriteList(userId: Int) : Flow<List<Favourites?>>{
+        return fovouriteRepository.getFavouriteByUserId(userId)
     }
+
+
 
     fun editName (newName: String) {
         val updatedName = userUistate.usersDetails.copy(name = newName)
