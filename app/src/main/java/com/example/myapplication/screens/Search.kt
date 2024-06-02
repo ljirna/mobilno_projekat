@@ -55,15 +55,15 @@ fun Search(modifier: Modifier = Modifier,
                 .height(64.dp) // Adjust height as needed
                 .background(color = Color(0xffb36370))
         ) {
-            Heading("Search", Modifier);
+           // Heading("Search", Modifier);
         }
 
-        LazyColumn(modifier = Modifier.offset(y =10.dp) ){
-            items(SalonObject.salons) {
-                    salons->
-                SalonsCard(salons = salons)
-            }
-        }
+        //LazyColumn(modifier = Modifier.offset(y =10.dp) ){
+            //items(SalonObject.salons) {
+                   // salons->
+                //SalonsCard(salons = salons)
+            //}
+        //}
     }
 
 }

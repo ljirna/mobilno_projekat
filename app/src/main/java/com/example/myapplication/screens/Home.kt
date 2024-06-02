@@ -32,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,6 +66,8 @@ import com.example.myapplication.screens.navigation.NavigationDestination
 object HomeDestination : NavigationDestination {
     override val route = "home"
     override val title = "Home"
+    const val userId = "userId"
+    val routeWithArgs = "$route/{$userId}"
 }
 /*
 @Composable
@@ -85,7 +88,7 @@ fun HomeWithBottomBar(
 fun Home(modifier: Modifier =Modifier,
          navigateToSearch: () -> Unit = {},
          navigateToProfile: () -> Unit = {},
-         navigateToBeautySalon: () -> Unit = {}
+         navigateToBeautySalon: (Int) -> Unit = {_ ->}
 ) {
 
     // State to keep track of the selected category
@@ -98,7 +101,6 @@ fun Home(modifier: Modifier =Modifier,
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .height(64.dp) // Adjust height as needed
                 .background(color = Color(0xffb36370))
                 .clickable {
@@ -106,7 +108,31 @@ fun Home(modifier: Modifier =Modifier,
                     selectedCategory = null
                 }
         ) {
-            Heading("Home", Modifier)
+            Row (
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+            ) {
+                Text(
+                    text = "Home",
+                    color = Color.White,
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .weight(1f) // This will make the Text composable take up as much space as it can
+                        .padding(20.dp)
+                        .offset(x = 16.dp)
+                )
+
+                IconButton(onClick = {
+                                     navigateToProfile()
+                }, Modifier.size(48.dp).offset(y = 8.dp)) { // Increase the size here
+                    Icon(painter = painterResource(id = R.drawable.user), contentDescription = "", tint = Color.White, modifier =  Modifier.size(25.dp).offset(x = -8.dp)) // And here
+                }
+            }
         }
         ScrollCategory(onCategoryClick = { category ->
             selectedCategory = category
@@ -122,12 +148,14 @@ fun Home(modifier: Modifier =Modifier,
         LazyColumn(modifier = Modifier.offset(y =20.dp) ){
             items(filteredSalons) {
                     salon ->
-                SalonsCard(salons = salon)
+                SalonsCard(salons = salon, navigateToBeautySalon = navigateToBeautySalon)
             }
         }
 
     }
 }
+
+
 
 @Composable
 fun ScrollCategory(onCategoryClick: (Categories) -> Unit){
@@ -180,7 +208,7 @@ fun CategoryCard(category: Categories, onClick: () -> Unit) {
 }
 
 @Composable
-fun SalonsCard (salons: Salons){ //, navController: NavController
+fun SalonsCard (salons: Salons, navigateToBeautySalon: (Int) -> Unit){ //, navController: NavController
 
     Column (
         modifier = Modifier
@@ -245,7 +273,9 @@ fun SalonsCard (salons: Salons){ //, navController: NavController
             }
         }
         Button(
-            onClick = { }, //navController.navigate("beautySalon/${salon.id}")
+            onClick = {
+                navigateToBeautySalon(salons.id)
+            }, //navController.navigate("beautySalon/${salon.id}")
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xffb36370)),
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),

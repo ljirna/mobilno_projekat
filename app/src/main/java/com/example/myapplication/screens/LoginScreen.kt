@@ -54,7 +54,7 @@ object LoginDestination : NavigationDestination {
 fun LoginScreen(
     modifier: Modifier = Modifier,
     navigateToSignup: () -> Unit = {},
-    navigateToHomePage: () -> Unit = {},
+    navigateToHomePage: (Int) -> Unit = {_ ->},
     viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val context = LocalContext.current
     val userUiState = viewModel.userUiState
@@ -169,7 +169,7 @@ fun LoginScreen(
                         if (isLoggedIn) {
                             errorMessage = null
                             showToast = true
-                            navigateToHomePage()
+                            navigateToHomePage(viewModel.userUiState.usersDetails.id)
                         } else {
                             errorMessage = error
                             Log.d("Register", "Registration failed: $error")

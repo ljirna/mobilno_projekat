@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -62,8 +63,12 @@ import kotlinx.coroutines.launch
 object BeautySalonDestination : NavigationDestination{
     override val route = "beautySalon"
     override val title = "Beauty Salon"
+    const val userId = "userId"
+    const val salonId = "salonId"
+    val routeWithArgs = "$route/{$userId}/{$salonId}"
 }
 
+/*
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun SalonWithBottomBar(
@@ -77,17 +82,19 @@ fun SalonWithBottomBar(
         Home()
     }
 }
-
+*/
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BeautySalon(
-    salon: Salons,
+    salonId: Int,
     userId:Int,
     modifier: Modifier = Modifier,
-    viewModel: SalonFavoritesViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: SalonFavoritesViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToHomePage: () -> Unit
     //,navigateToSearch: () -> Unit,
     //navigateToProfile: () -> Unit
 ){
+    var salon = SalonObject.salons.find { it.id == salonId } ?: return
     var isFavorite by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -109,7 +116,44 @@ fun BeautySalon(
                 .height(64.dp) // Adjust height as needed
                 .background(color = Color(0xffb36370))
         ) {
-            Heading("Beauty Salon", Modifier);
+            Row (
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+            ) {
+
+                IconButton(onClick = { /*TODO*/ }, Modifier
+                    .size(48.dp)
+                    .offset(y = 8.dp)) {
+                    Icon(painter = painterResource(id = R.drawable.back), contentDescription = "", tint = Color.White, modifier = Modifier
+                        .size(25.dp)
+                        .offset(x = -8.dp))
+                }
+
+
+                Text(
+                    text = "Beauty Salon",
+                    color = Color.White,
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .weight(1f) // This will make the Text composable take up as much space as it can
+                        .padding(20.dp)
+                        .offset(x = 16.dp)
+                )
+
+                IconButton(onClick = { /*TODO*/ },
+                    Modifier
+                        .size(48.dp)
+                        .offset(y = 8.dp)) { // Increase the size here
+                    Icon(painter = painterResource(id = R.drawable.user), contentDescription = "", tint = Color.White, modifier = Modifier
+                        .size(25.dp)
+                        .offset(x = -8.dp)) // And here
+                }
+            }
         }
         Image(
             painter = painterResource(id = salon.image),
@@ -198,27 +242,8 @@ fun BeautySalon(
 }
 
 
-@Composable
-fun Heading(title: String, modifier: Modifier = Modifier) {
-    Row (
-        horizontalArrangement = Arrangement.Center,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
-    ) {
-        Text(
-            text = title,
-            color = Color.White,
-            style = androidx.compose.ui.text.TextStyle(
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        )
-    }
-}
+
+
 
 @Composable
 fun ServiceCard (service: Service, modifier: Modifier = Modifier) {
@@ -301,5 +326,5 @@ fun ServiceCard (service: Service, modifier: Modifier = Modifier) {
 @Composable
 private fun BeautySalonPreview() {
     val salon = SalonObject.salons.find { it.id == 1 } ?: return
-    BeautySalon(salon = salon, userId = 1)
+    //BeautySalon(salonId, userId)
 }

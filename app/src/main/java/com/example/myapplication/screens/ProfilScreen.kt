@@ -79,17 +79,20 @@ import kotlinx.coroutines.async
 import androidx.compose.material3.Text as Text1
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.text.style.TextAlign
 
 object ProfileDestination : NavigationDestination {
     override val route = "profile"
     override val title = "Profile"
+    const val userId = "userId"
+    val routeWithArgs = "$route/{$userId}"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier,
                   navigateToHomePage: () -> Unit = {},
-                  navigateToSearch: () -> Unit = {},
+                  navigateToLogin: () -> Unit = {},
                   userId: Int
                   ) {
 
@@ -109,14 +112,29 @@ fun ProfileScreen(modifier: Modifier = Modifier,
                 .background(color = Color(0xffb36370))
         ) {
             // Header content
-            Text(
-                text = "Profile",
-                color = Color.White,
-                style = TextStyle(
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier.align(Alignment.Center)
-            )
+            Row (
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+            ) {
+                Text(
+                    text = "Profile",
+                    color = Color.White,
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .weight(1f) // This will make the Text composable take up as much space as it can
+                        .padding(20.dp)
+                        .offset(x = 16.dp)
+                )
+
+                IconButton(onClick = { /*TODO*/ }, Modifier.size(48.dp).offset(y = 8.dp)) { // Increase the size here
+                    Icon(painter = painterResource(id = R.drawable.home), contentDescription = "", tint = Color.White, modifier =  Modifier.size(25.dp).offset(x = -8.dp)) // And here
+                }
+            }
         }
         Column(
             Modifier
