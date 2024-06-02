@@ -23,11 +23,6 @@ object AppViewModelProvider {
         }
         initializer {
             ProfileViewModel(
-                appApplication().container.userRepository
-            )
-        }
-        initializer {
-            ProfileVeiewModel(
                 appApplication().container.userRepository,
                 appApplication().container.favouritesRepository
             )
