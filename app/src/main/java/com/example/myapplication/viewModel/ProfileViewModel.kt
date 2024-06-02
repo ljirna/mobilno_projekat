@@ -50,4 +50,29 @@ class ProfileViewModel (
             }
         }
     }
+
+    fun editName (newName: String) {
+        val updatedName = userUistate.usersDetails.copy(name = newName)
+        userUistate = userUistate.copy(usersDetails = updatedName)
+    }
+
+    fun editEmail(newEmail: String) {
+        val updatedEmail = userUistate.usersDetails.copy(email = newEmail)
+        userUistate = userUistate.copy(usersDetails = updatedEmail)
+    }
+    fun editPhone(newPhone: String) {
+        val updatedPhone = userUistate.usersDetails.copy(phone = newPhone)
+        userUistate = userUistate.copy(usersDetails = updatedPhone)
+    }
+
+    fun saveChanges(onResult: (Boolean, String?) -> Unit) {
+        viewModelScope.launch {
+            try {
+                userRepository.update(userUistate.usersDetails.toUsers())
+                onResult(true, null)
+            } catch (e: Exception) {
+                onResult(false, e.message ?: "Unknown error")
+            }
+        }
+    }
 }

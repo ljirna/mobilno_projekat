@@ -81,6 +81,8 @@ fun ProfileScreen(modifier: Modifier = Modifier, user: Users) {
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var showFavorites by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null)}
+    var showToast by remember { mutableStateOf(false) }
 
 
     Column(Modifier.fillMaxHeight()) {
@@ -157,13 +159,8 @@ fun ProfileScreen(modifier: Modifier = Modifier, user: Users) {
 
             } else {
                 UserInfo(
-                    name = user.name,
-                    email = user.email,
-                    phone = user.phone,
-                    userId = 1,
+                    user = user,
                     salonId = 1,
-                    onNameChange = { name = it },
-                    onEmailChange = { email = it },
                     onPhoneChange = { phone = it },
                     onLogout = { }
                 )
@@ -180,14 +177,9 @@ fun Title(title: String){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserInfo (
-    name: String,
-    email: String,
-    phone: String,
-    userId: Int,
+    user: Users,
     salonId: Int,
     viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    onNameChange: (String) -> Unit,
-    onEmailChange: (String) -> Unit,
     onPhoneChange: (String) -> Unit,
     onLogout: () -> Unit){
 
@@ -198,8 +190,8 @@ fun UserInfo (
     val likes by viewModel::likesUiState
 
     LaunchedEffect(Unit) {
-        viewModel.getUserData(userId)
-        viewModel.fetchLikes(userId, salonId)
+        viewModel.getUserData(user.id)
+        viewModel.fetchLikes(user.id, salonId)
     }
 
 
@@ -208,8 +200,9 @@ fun UserInfo (
         Modifier.padding(16.dp)
     ) {
         TextField(
-            value = name,
-            onValueChange = { onNameChange(it) },
+            // poslije navigacije promijeniti na -> usersUiState.usersDetails.name
+            value = user.name,
+            onValueChange = { viewModel.editName(it) },
             label = { Text("Full Name")},
             modifier = Modifier
                 .fillMaxWidth()
@@ -226,8 +219,9 @@ fun UserInfo (
             shape = RoundedCornerShape(8.dp)
         )
         TextField(
-            value = email,
-            onValueChange = { onEmailChange(it) },
+            // poslije navigacije promijeniti na -> usersUiState.usersDetails.email
+            value = user.email,
+            onValueChange = { viewModel.editEmail(it)},
             label = { Text(text = "Email")},
             modifier = Modifier
                 .fillMaxWidth()
@@ -244,8 +238,9 @@ fun UserInfo (
             shape = RoundedCornerShape(8.dp)
         )
         TextField(
-            value = phone,
-            onValueChange = { onPhoneChange(it) },
+            // poslije navigacije promijeniti na -> usersUiState.usersDetails.phone
+            value = user.phone,
+            onValueChange = { viewModel.editPhone(it) },
             label = { Text(text = "Phone")},
             modifier = Modifier
                 .fillMaxWidth()
@@ -264,7 +259,15 @@ fun UserInfo (
 
         Row(){
             Button(
-                onClick = { },
+                onClick = {
+                    viewModel.saveChanges { success, message ->
+                        if (success) {
+                            Toast.makeText(context, "Changes saved", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, message ?: "An error occurred", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xffb36370)),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
