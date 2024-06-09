@@ -1,6 +1,7 @@
 package com.example.myapplication.viewModel
 
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -11,19 +12,18 @@ object AppViewModelProvider {
 
     val Factory = viewModelFactory {
         initializer {
-            SignupViewModel(
+            LoginSignUpViewModel(
                 appApplication().container.userRepository
             )
         }
         initializer {
-            LoginViewModel(
-                appApplication().container.userRepository
+            UserViewModel(
+                appApplication().container.userRepository,
+                this.createSavedStateHandle()
             )
-
         }
         initializer {
             ProfileViewModel(
-                appApplication().container.userRepository,
                 appApplication().container.favouritesRepository
             )
         }

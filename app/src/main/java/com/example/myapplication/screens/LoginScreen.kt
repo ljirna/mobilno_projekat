@@ -41,7 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.screens.navigation.NavigationDestination
 import com.example.myapplication.viewModel.AppViewModelProvider
-import com.example.myapplication.viewModel.LoginViewModel
+import com.example.myapplication.viewModel.LoginSignUpViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Text as Text1
 
@@ -55,7 +55,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     navigateToSignup: () -> Unit = {},
     navigateToHomePage: (Int) -> Unit = {_ ->},
-    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+    viewModel: LoginSignUpViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val context = LocalContext.current
     val userUiState = viewModel.userUiState
     val coroutineScope = rememberCoroutineScope()

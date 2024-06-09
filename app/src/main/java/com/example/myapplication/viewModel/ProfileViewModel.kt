@@ -21,8 +21,8 @@ class ProfileViewModel (
     var favouriteUiState by mutableStateOf(FavouritesUiState())
         private set
 
-    var likesUiState by mutableStateOf(FavouritesUiState())
-        private set
+   /* var likesUiState by mutableStateOf(FavouritesUiState())
+        private set*/
 
     fun getUserData(id: Int){
         viewModelScope.launch {
@@ -35,41 +35,8 @@ class ProfileViewModel (
         }
     }
 
-    fun logout(onLogout: () -> Unit) {
-        userUistate = UsersUiState()
-        favouriteUiState = FavouritesUiState()
-        onLogout()
-    }
-
     fun getFavouriteList(userId: Int) : Flow<List<Favourites?>>{
         return favouriteRepository.getFavouriteByUserId(userId)
-    }
-
-
-
-    fun editName (newName: String) {
-        val updatedName = userUistate.usersDetails.copy(name = newName)
-        userUistate = userUistate.copy(usersDetails = updatedName)
-    }
-
-    fun editEmail(newEmail: String) {
-        val updatedEmail = userUistate.usersDetails.copy(email = newEmail)
-        userUistate = userUistate.copy(usersDetails = updatedEmail)
-    }
-    fun editPhone(newPhone: String) {
-        val updatedPhone = userUistate.usersDetails.copy(phone = newPhone)
-        userUistate = userUistate.copy(usersDetails = updatedPhone)
-    }
-
-    fun saveChanges(onResult: (Boolean, String?) -> Unit) {
-        viewModelScope.launch {
-            try {
-                userRepository.update(userUistate.usersDetails.toUsers())
-                onResult(true, null)
-            } catch (e: Exception) {
-                onResult(false, e.message ?: "Unknown error")
-            }
-        }
     }
 
     fun deleteFavoriteBySalonId(salonId: Int) {
