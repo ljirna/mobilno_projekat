@@ -3,6 +3,7 @@ package com.example.myapplication.screens
 
 
 
+import android.util.Log
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -80,6 +81,8 @@ import androidx.compose.material3.Text as Text1
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.text.style.TextAlign
+import com.example.myapplication.viewModel.UserViewModel
+import kotlinx.coroutines.launch
 
 object ProfileDestination : NavigationDestination {
     override val route = "profile"
@@ -93,17 +96,30 @@ object ProfileDestination : NavigationDestination {
 fun ProfileScreen(modifier: Modifier = Modifier,
                   navigateToHomePage: () -> Unit = {},
                   navigateToLogin: () -> Unit = {},
-                  userId: Int
+                  //userId: Int
+                  viewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory),
+                  profileViewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory),
                   ) {
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var showFavorites by remember { mutableStateOf(false) }
+    var uiState = viewModel.userUiState
+    var detailsState = uiState.usersDetails
+
+    var name = "Samira Zeba"
+    var email = "samira.zeba@stu.ibu.edu.ba"
+    var phone = "061 123 456"
+    var showFavourites by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null)}
     var showToast by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
+    Log.d("ProfileScreen", viewModel.userUiState.toString())
+
+
+
+
+    //HEADER
     Column(Modifier.fillMaxHeight()) {
         Box(
             modifier = Modifier
@@ -155,7 +171,7 @@ fun ProfileScreen(modifier: Modifier = Modifier,
             )
 
             Row(Modifier.offset(y = 30.dp)) {
-                IconButton(onClick = { showFavorites = false },
+                IconButton(onClick = { showFavourites = false },
                     modifier = Modifier.size(24.dp),
                     content = {
                         Icon(
@@ -170,7 +186,7 @@ fun ProfileScreen(modifier: Modifier = Modifier,
                 )
 
                 Spacer(Modifier.size(40.dp))
-                IconButton(onClick = { showFavorites = true },
+                IconButton(onClick = { showFavourites = true },
                     modifier = Modifier.size(24.dp),
                     content = {
                         Icon(
@@ -188,14 +204,16 @@ fun ProfileScreen(modifier: Modifier = Modifier,
 
             Spacer(Modifier.size(30.dp))
 
-            if (showFavorites) {
-                display(
-                    userId = userId
-                    )
+            LaunchedEffect(Unit) {
+                showFavourites = false
+                profileViewModel.getUserData(viewModel.userUiState.usersDetails.id)
+            }
+
+            if (showFavourites == true) {
+                display()
 
             } else {
                 UserInfo(
-                    userId = userId,
                     onLogout = { }
                 )
             }
@@ -211,19 +229,16 @@ fun Title(title: String){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserInfo (
-    userId: Int,
-    viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory),
+
+    viewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory),
     onLogout: () -> Unit){
 
     val coroutineScope = rememberCoroutineScope()
-    val usersUiState by viewModel::userUistate
-    val favouritesUiState by viewModel::favouriteUiState
+    //val usersUiState by viewModel::userUistate
+    //val favouritesUiState by viewModel::favouriteUiState
     val context = LocalContext.current
-    val likes by viewModel::likesUiState
 
-    LaunchedEffect(Unit) {
-        viewModel.getUserData(userId)
-    }
+
 
 
 
@@ -232,9 +247,14 @@ fun UserInfo (
     ) {
         TextField(
             // poslije navigacije promijeniti na -> usersUiState.usersDetails.name
-            value = usersUiState.usersDetails.name,
-            onValueChange = { viewModel.editName(it) },
-            label = { Text("Full Name")},
+            value = viewModel.userUiState.usersDetails.name,
+            onValueChange = {},
+            label = {
+                Text(text = "Full Name")
+                    },
+            isError = false,
+            readOnly = true,
+            enabled = false,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
@@ -251,9 +271,12 @@ fun UserInfo (
         )
         TextField(
             // poslije navigacije promijeniti na -> usersUiState.usersDetails.email
-            value = usersUiState.usersDetails.email,
-            onValueChange = { viewModel.editEmail(it)},
+            value = viewModel.userUiState.usersDetails.email,
+            onValueChange = { },
             label = { Text(text = "Email")},
+            isError = false,
+            readOnly = true,
+            enabled = false,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
@@ -270,9 +293,13 @@ fun UserInfo (
         )
         TextField(
             // poslije navigacije promijeniti na -> usersUiState.usersDetails.phone
-            value = usersUiState.usersDetails.phone,
-            onValueChange = { viewModel.editPhone(it) },
+            value = viewModel.userUiState.usersDetails.phone,
+            onValueChange = {
+                viewModel.updateUiState(viewModel.userUiState.usersDetails.copy(phone = it))
+            },
             label = { Text(text = "Phone")},
+            isError = false,
+            readOnly = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
@@ -291,11 +318,12 @@ fun UserInfo (
         Row(){
             Button(
                 onClick = {
-                    viewModel.saveChanges { success, message ->
-                        if (success) {
+                    coroutineScope.launch {
+                        try {
+                            viewModel.updateUser()
                             Toast.makeText(context, "Changes saved", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, message ?: "An error occurred", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            Toast.makeText(context, e.message ?: "An error occurred", Toast.LENGTH_SHORT).show()
                         }
                     }
                 },
@@ -318,8 +346,9 @@ fun UserInfo (
             }
             Button(
                 onClick = {
-                    viewModel.logout(onLogout)
+                    viewModel.clearUi()
                     Toast.makeText(context,  "You have logged out", Toast.LENGTH_SHORT).show()
+                    //navigateToLogin()
 
                 },
                 shape = RoundedCornerShape(10.dp),
@@ -345,18 +374,17 @@ fun UserInfo (
 
 @Composable
 fun display(
-    userId: Int,
     viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val usersUiState by viewModel::userUistate
-    val favouritesUiState by viewModel::favouriteUiState
-    val context = LocalContext.current
-    val likes by viewModel::likesUiState
+    //val favouritesUiState by viewModel::favouriteUiState
+    //val context = LocalContext.current
+    //val likes by viewModel::likesUiState
 
     var favouriteList by remember { mutableStateOf(listOf<Favourites>()) }
 
-    LaunchedEffect(userId) {
-        viewModel.getFavouriteList(userId).collect { favourites ->
+    LaunchedEffect(usersUiState.usersDetails.id) {
+        viewModel.getFavouriteList(usersUiState.usersDetails.id).collect { favourites ->
             favouriteList = favourites.filterNotNull()
         }
     }
@@ -477,9 +505,9 @@ fun favorites(  salons: Salons,
 @Preview
 @Composable
 fun favoritesPreview(){
-    val salon = SalonObject.salons.find { it.id == 1 } ?: return
+    /*val salon = SalonObject.salons.find { it.id == 1 } ?: return
     val favourite = Favourites(1, 1, 1)
-    display(userId = 1);
+    display();*/
 }
 
 @Preview(widthDp = 390, heightDp = 844)
@@ -492,5 +520,5 @@ fun ProfileScreenPreview() {
         phone = "061 123 456",
         password = "123456"
     )*/
-    ProfileScreen(userId = 1)
+    //ProfileScreen(userId = 1)
 }

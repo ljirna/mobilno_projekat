@@ -59,15 +59,18 @@ import com.example.myapplication.model.Categories
 import com.example.myapplication.model.CategoriesObject
 import com.example.myapplication.model.SalonObject
 import com.example.myapplication.model.Salons
+import com.example.myapplication.model.models.Users
+import com.example.myapplication.model.repositories.UserRepository
 import com.example.myapplication.screens.navigation.NavigationDestination
+import com.example.myapplication.viewModel.UsersDetails
 
 //import com.example.myapplication.screens.navigation.UserBottomBar
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
     override val title = "Home"
-    const val userId = "userId"
-    val routeWithArgs = "$route/{$userId}"
+    const val userIdArg = "userId"
+    val routeWithArgs = "$route/{$userIdArg}"
 }
 /*
 @Composable
